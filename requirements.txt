@@ -1,0 +1,13 @@
+# --- Reading data ---
+pandas>=2.2.3        # tables (DataFrame): the common format for all data sources
+openpyxl>=3.1        # lets pandas read Excel (.xlsx) files
+pdfplumber>=0.11     # extracts tables and text from PDF files
+requests>=2.32       # calls REST APIs over HTTP
+
+# --- Writing reports ---
+python-docx>=1.1     # opens the Word template and writes the report
+matplotlib>=3.9      # draws charts and saves them as images
+
+# --- Development ---
+pytest>=8.0          # runs automated tests
+reportlab>=4.0       # creates the sample PDF data files
