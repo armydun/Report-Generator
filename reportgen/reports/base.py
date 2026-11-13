@@ -117,17 +117,18 @@ class Report(ABC):
     def output_filename(self) -> str:
         return f"{self.file_prefix}_{self.period.file_tag}.docx"
 
-    def load_source(self, name: str, required: bool = True) -> pd.DataFrame | None:
+    def load_source(self, name: str, required: bool = True, **overrides) -> pd.DataFrame | None:
         """Load one named data source.
 
         required=True : a failure stops the report (DataSourceError).
         required=False: a failure is logged and noted, and None is returned,
                         so the report can still be made from the other sources.
+        overrides     : one-off changes to the settings, e.g. url=... for a given year.
         """
         if name not in self.sources:
             raise ReportError(f"Report '{self.key}' has no data source called '{name}'")
 
-        settings = dict(self.sources[name])  # a copy, so the original is not changed
+        settings = {**self.sources[name], **overrides}  # a new dict, so the original is not changed
         kind = settings.pop("kind")
         if "path" in settings:
             settings["path"] = resolve_path(settings["path"])

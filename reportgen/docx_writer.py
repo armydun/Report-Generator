@@ -27,6 +27,7 @@ BRAND_DARK_BLUE = "1B5C8A"
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 NOTE_COLOR = RGBColor(0x1B, 0x5C, 0x8A)
 NUMBER_LIKE = re.compile(r"[-+]?\$?[\d,]+(\.\d+)?%?")  # e.g. 1,200  $85,000  -3.5%
+TABLE_WIDTH_CM = 16.5  # page width minus the template margins
 
 
 def write_report(
@@ -123,8 +124,25 @@ def add_table(document, block: Table) -> None:
             if NUMBER_LIKE.fullmatch(text):
                 cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
+    # Give wide columns (e.g. long product names) more room than short ones
+    table.autofit = False
+    for column, width in zip(table.columns, column_widths(df)):
+        column.width = width       # the table's column grid
+        for cell in column.cells:
+            cell.width = width     # each cell (Word reads this)
+
     if block.caption:
         document.add_paragraph(block.caption, style="Caption")
+
+
+def column_widths(df: pd.DataFrame) -> list[Cm]:
+    """Share the table width between columns by how long their text is."""
+    lengths = []
+    for column in df.columns:
+        longest = max([len(str(column))] + [len(str(value)) for value in df[column]])
+        lengths.append(min(max(longest, 5), 30) + 3)  # 5 to 30 characters, plus room for cell padding
+    total = sum(lengths)
+    return [Cm(TABLE_WIDTH_CM * length / total) for length in lengths]
 
 
 def add_chart(document, block: Chart) -> None:
