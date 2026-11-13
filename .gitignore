@@ -221,3 +221,6 @@ __marimo__/
 
 # Word lock files
 ~$*
+
+# Generated chart images
+figures/*.png

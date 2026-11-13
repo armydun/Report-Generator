@@ -7,6 +7,7 @@ requests>=2.32       # calls REST APIs over HTTP
 # --- Writing reports ---
 python-docx>=1.1     # opens the Word template and writes the report
 matplotlib>=3.9      # draws charts and saves them as images
+docx2pdf>=0.1.8; sys_platform == "win32"   # Word -> PDF (Windows only)
 
 # --- Development ---
 pytest>=8.0          # runs automated tests
